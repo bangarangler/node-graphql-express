@@ -127,7 +127,7 @@ mongoose
     {useNewUrlParser: true},
   )
   .then(result => {
-    app.listen(8080);
+    app.listen(process.env.PORT || 8080);
     //const server = app.listen(8080);
     //const io = require('./socket').init(server);
     //io.on('connection', socket => {
