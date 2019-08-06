@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const path = require('path');
+const fs = require('fs');
 const express = require('express');
 //const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -12,6 +13,9 @@ const graphqlSchema = require('./graphql/schema.js');
 const graphqlResolver = require('./graphql/resolvers.js');
 const auth = require('./middleware/auth.js');
 const { clearImage } = require('./util/file.js');
+const helmet = require('helmet');
+const compression = require('compression');
+const morgan = require('morgan');
 
 //const feedRoutes = require('./routes/feed.js');
 //const authRoutes = require('./routes/auth.js');
@@ -38,6 +42,15 @@ const fileFilter = (req, file, cb) => {
     cb(null, false);
   }
 };
+
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, 'access.log'),
+  { flags: 'a' }
+);
+
+app.use(helmet());
+app.use(compression());
+app.use(morgan('combined', { stream: accessLogStream }));
 
 //app.use(bodyParser.urlencoded()); // x-www-form-urlencoded <form>
 app.use(bodyParser.json()); // application/json
